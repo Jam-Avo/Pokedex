@@ -8,22 +8,17 @@ import 'package:pokedex/pokemon_repository.dart';
 class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   final _pokemonRespository = PokemonRepository();
 
-  PokemonBloc() : super(PokemonInitial());
-
-  @override
-  Stream<PokemonState> mapEventToState(PokemonEvent event) async* {
-    if (event is PokemonPageResquest) {
-      yield PokemonLoadInProgress();
-
-      yield* await _pokemonRespository
+  PokemonBloc() : super(PokemonInitial()) {
+    on<PokemonPageResquest>((event, emit) async {
+      await _pokemonRespository
           .getPokemonPage(event.page)
-          .then((pokemonResponse) async* {
-        yield PokemonPageLoadSuccess(
+          .then((pokemonResponse) {
+        emit(PokemonPageLoadSuccess(
             pokemonListings: pokemonResponse.pokemonListing,
-            canLoadNextPage: pokemonResponse.canLoadNexPage);
-      }).catchError((e) async* {
-        yield PokemonPageLoadFailed(error: e);
+            canLoadNextPage: pokemonResponse.canLoadNexPage));
+      }).catchError((e) {
+        emit(PokemonPageLoadFailed(error: e));
       });
-    }
+    });
   }
 }
