@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_bloc.dart';
+import 'package:pokedex/bloc/pokemon/pokemon_event.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_state.dart';
 import 'package:pokedex/routes/names_routes.dart';
+import 'package:pokedex/utils/constants.dart';
 
-class PokedexView extends StatelessWidget {
+class PokedexView extends HookWidget {
   const PokedexView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      context.read<PokemonBloc>().add(PokemonSimpleListResquest(page: 0));
+      return null;
+    }, []);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pokedex'),
       ),
       body: BlocBuilder<PokemonBloc, PokemonState>(
         builder: (context, state) {
-          if (state is PokemonSimpleListLoadInProgress) {
+          print({
+            'pokemonSimpleListStatus': state.pokemonSimpleListStatus.toString()
+          });
+
+          print({
+            'pokemonCompleteStatus': state.pokemonCompleteStatus.toString()
+          });
+
+          print({'pokemonComplete': state.pokemonComplete.toString()});
+
+          print({'pokemonSimpleList': state.pokemonSimpleList.toString()});
+
+          if (state.pokemonSimpleListStatus == RequestStatus.loadInProgress) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is PokemonSimpleListLoadSuccess) {
+          } else if (state.pokemonSimpleListStatus ==
+              RequestStatus.loadSuccess) {
             return Column(
               children: [
                 Padding(
@@ -62,9 +83,10 @@ class PokedexView extends StatelessWidget {
                 ),
               ],
             );
-          } else if (state is PokemonSimpleListLoadFailed) {
+          } else if (state.pokemonSimpleListStatus ==
+              RequestStatus.loadFailed) {
             return Center(
-              child: Text(state.error.toString()),
+              child: Text(state.errorPokemonSimpleList.toString()),
             );
           } else {
             return Container();
@@ -82,7 +104,7 @@ class GridPokemons extends StatelessWidget {
     required this.state,
   }) : super(key: key);
 
-  final PokemonSimpleListLoadSuccess state;
+  final PokemonState state;
   final BuildContext context;
 
   @override
@@ -90,7 +112,7 @@ class GridPokemons extends StatelessWidget {
     return GridView.builder(
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-        itemCount: state.pokemonListings.length,
+        itemCount: state.pokemonSimpleList!.length,
         itemBuilder: (context, index) {
           return Card(
             child: GridTile(
@@ -102,8 +124,8 @@ class GridPokemons extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      Image.network(state.pokemonListings[index].imageUrl),
-                      Text(state.pokemonListings[index].name)
+                      Image.network(state.pokemonSimpleList![index].imageUrl),
+                      Text(state.pokemonSimpleList![index].name)
                     ],
                   ),
                 ),

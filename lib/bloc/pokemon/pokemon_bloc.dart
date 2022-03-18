@@ -2,36 +2,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_event.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_state.dart';
 import 'package:pokedex/repositories/pokemon_repository.dart';
+import 'package:pokedex/utils/constants.dart';
 
 class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   final _pokemonRespository = PokemonRepository();
 
-  PokemonBloc() : super(PokemonSimpleListInitial()) {
+  PokemonBloc() : super(const PokemonState()) {
     on<PokemonSimpleListResquest>((event, emit) async {
+      emit(state.copyWith(
+          pokemonSimpleListStatus: RequestStatus.loadInProgress));
       await _pokemonRespository
           .getPokemonSimpleList(pageIndex: event.page)
           .then((pokemonSimpleListResponse) {
         emit(
-          PokemonSimpleListLoadSuccess(
-            pokemonListings: pokemonSimpleListResponse.pokemonSimpleList,
-            canLoadNextPage: pokemonSimpleListResponse.canLoadNexPage,
-          ),
+          state.copyWith(
+              pokemonSimpleList: pokemonSimpleListResponse.pokemonSimpleList,
+              canLoadNextPage: pokemonSimpleListResponse.canLoadNexPage,
+              pokemonSimpleListStatus: RequestStatus.loadSuccess),
         );
       }).catchError((e) {
-        emit(PokemonSimpleListLoadFailed(error: e));
+        emit(state.copyWith(
+          errorPokemonSimpleList: e,
+          pokemonSimpleListStatus: RequestStatus.loadFailed,
+        ));
       });
     });
+
     on<PokemonCompleteResquest>((event, emit) async {
+      print({'dentro de bloc': state.pokemonSimpleListStatus});
+
+      emit(state.copyWith(pokemonCompleteStatus: RequestStatus.loadInProgress));
       await _pokemonRespository
           .getPokemonComplete(id: event.id)
           .then((pokemonCompleteResponse) {
         emit(
-          PokemonCompleteLoadSuccess(
-            pokemonComplete: pokemonCompleteResponse,
-          ),
+          state.copyWith(
+              pokemonComplete: pokemonCompleteResponse,
+              pokemonCompleteStatus: RequestStatus.loadSuccess),
         );
       }).catchError((e) {
-        emit(PokemonCompleteLoadFailed(error: e));
+        emit(state.copyWith(
+          errorPokemonComplete: e,
+          pokemonCompleteStatus: RequestStatus.loadFailed,
+        ));
       });
     });
   }
