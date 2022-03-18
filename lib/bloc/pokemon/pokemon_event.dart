@@ -1,7 +1,13 @@
 abstract class PokemonEvent {}
 
-class PokemonPageResquest extends PokemonEvent {
+class PokemonSimpleListResquest extends PokemonEvent {
   final int page;
 
-  PokemonPageResquest({required this.page});
+  PokemonSimpleListResquest({required this.page});
+}
+
+class PokemonCompleteResquest extends PokemonEvent {
+  final int id;
+
+  PokemonCompleteResquest({required this.id});
 }

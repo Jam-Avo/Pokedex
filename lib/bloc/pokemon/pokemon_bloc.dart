@@ -6,16 +6,32 @@ import 'package:pokedex/repositories/pokemon_repository.dart';
 class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   final _pokemonRespository = PokemonRepository();
 
-  PokemonBloc() : super(PokemonInitial()) {
-    on<PokemonPageResquest>((event, emit) async {
+  PokemonBloc() : super(PokemonSimpleListInitial()) {
+    on<PokemonSimpleListResquest>((event, emit) async {
       await _pokemonRespository
-          .getPokemonSimpleList(event.page)
-          .then((pokemonResponse) {
-        emit(PokemonPageLoadSuccess(
-            pokemonListings: pokemonResponse.pokemonSimpleList,
-            canLoadNextPage: pokemonResponse.canLoadNexPage));
+          .getPokemonSimpleList(pageIndex: event.page)
+          .then((pokemonSimpleListResponse) {
+        emit(
+          PokemonSimpleListLoadSuccess(
+            pokemonListings: pokemonSimpleListResponse.pokemonSimpleList,
+            canLoadNextPage: pokemonSimpleListResponse.canLoadNexPage,
+          ),
+        );
       }).catchError((e) {
-        emit(PokemonPageLoadFailed(error: e));
+        emit(PokemonSimpleListLoadFailed(error: e));
+      });
+    });
+    on<PokemonCompleteResquest>((event, emit) async {
+      await _pokemonRespository
+          .getPokemonComplete(id: event.id)
+          .then((pokemonCompleteResponse) {
+        emit(
+          PokemonCompleteLoadSuccess(
+            pokemonComplete: pokemonCompleteResponse,
+          ),
+        );
+      }).catchError((e) {
+        emit(PokemonCompleteLoadFailed(error: e));
       });
     });
   }

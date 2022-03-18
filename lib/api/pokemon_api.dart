@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pokedex/models/pokemon/pokemon_complete_model.dart';
 import 'package:pokedex/models/pokemon/pokemon_simple_list_model.dart';
 
 class PokemonApi {
@@ -20,5 +21,12 @@ class PokemonApi {
     //   print("Error: $error");
     //   throw error;
     // });
+  }
+
+  Future<PokemonComplete> getPokemonComplete({required int id}) async {
+    return Dio().get("$baseUrl/api/v2/pokemon/$id").then((response) {
+      print("Response: $response");
+      return PokemonComplete.fromJson(response.data!);
+    });
   }
 }

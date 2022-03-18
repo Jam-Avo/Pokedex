@@ -1,22 +1,39 @@
 import 'package:dio/dio.dart';
+import 'package:pokedex/models/pokemon/pokemon_complete_model.dart';
 import 'package:pokedex/models/pokemon/pokemon_simple_model.dart';
 
 abstract class PokemonState {}
 
-class PokemonInitial extends PokemonState {}
+class PokemonSimpleListInitial extends PokemonState {}
 
-class PokemonLoadInProgress extends PokemonState {}
+class PokemonSimpleListLoadInProgress extends PokemonState {}
 
-class PokemonPageLoadSuccess extends PokemonState {
+class PokemonSimpleListLoadSuccess extends PokemonState {
   final List<PokemonSimple> pokemonListings;
   final bool canLoadNextPage;
 
-  PokemonPageLoadSuccess(
+  PokemonSimpleListLoadSuccess(
       {required this.pokemonListings, required this.canLoadNextPage});
 }
 
-class PokemonPageLoadFailed extends PokemonState {
+class PokemonSimpleListLoadFailed extends PokemonState {
   final DioError error;
 
-  PokemonPageLoadFailed({required this.error});
+  PokemonSimpleListLoadFailed({required this.error});
+}
+
+class PokemonCompleteInitial extends PokemonState {}
+
+class PokemonCompleteLoadInProgress extends PokemonState {}
+
+class PokemonCompleteLoadSuccess extends PokemonState {
+  final PokemonComplete pokemonComplete;
+
+  PokemonCompleteLoadSuccess({required this.pokemonComplete});
+}
+
+class PokemonCompleteLoadFailed extends PokemonState {
+  final DioError error;
+
+  PokemonCompleteLoadFailed({required this.error});
 }

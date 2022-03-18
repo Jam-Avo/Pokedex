@@ -16,6 +16,8 @@ dependencies:
 
   dio: ^4.0.4
 
+  flutter_hooks: ^0.18.2+1
+
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
