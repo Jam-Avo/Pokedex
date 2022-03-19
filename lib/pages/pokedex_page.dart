@@ -7,8 +7,8 @@ import 'package:pokedex/bloc/pokemon/pokemon_state.dart';
 import 'package:pokedex/routes/names_routes.dart';
 import 'package:pokedex/utils/constants.dart';
 
-class PokedexView extends HookWidget {
-  const PokedexView({Key? key}) : super(key: key);
+class PokedexPage extends HookWidget {
+  const PokedexPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +20,11 @@ class PokedexView extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pokedex'),
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: BlocBuilder<PokemonBloc, PokemonState>(
         builder: (context, state) {
-          print({
-            'pokemonSimpleListStatus': state.pokemonSimpleListStatus.toString()
-          });
-
-          print({
-            'pokemonCompleteStatus': state.pokemonCompleteStatus.toString()
-          });
-
-          print({'pokemonComplete': state.pokemonComplete.toString()});
-
-          print({'pokemonSimpleList': state.pokemonSimpleList.toString()});
-
           if (state.pokemonSimpleListStatus == RequestStatus.loadInProgress) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -120,7 +110,12 @@ class GridPokemons extends StatelessWidget {
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, NamesRoutes.description);
+                    Navigator.pushNamed(
+                      context,
+                      NamesRoutes.description +
+                          "/" +
+                          state.pokemonSimpleList![index].id.toString(),
+                    );
                   },
                   child: Column(
                     children: [

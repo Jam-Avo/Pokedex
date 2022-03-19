@@ -29,8 +29,6 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
     });
 
     on<PokemonCompleteResquest>((event, emit) async {
-      print({'dentro de bloc': state.pokemonSimpleListStatus});
-
       emit(state.copyWith(pokemonCompleteStatus: RequestStatus.loadInProgress));
       await _pokemonRespository
           .getPokemonComplete(id: event.id)
