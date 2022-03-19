@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_bloc.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_event.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_state.dart';
+import 'package:pokedex/models/pokemon/pokemon_complete_model.dart';
 import 'package:pokedex/utils/constants.dart';
 
 class DescriptionPokemonPage extends HookWidget {
@@ -54,6 +55,14 @@ class DescriptionPokemonPage extends HookWidget {
                   child: TypesPokemon(typesPokemon: typesPokemon),
                 ),
                 Positioned(
+                  top: 20,
+                  right: 30,
+                  child: StarFavoritePokemon(
+                    favoritePokemons: state.favoritePokemons!,
+                    pokemon: state.pokemonComplete!,
+                  ),
+                ),
+                Positioned(
                   top: height * 0.18,
                   right: -30,
                   child: const ImagePokeballBackground(),
@@ -86,6 +95,42 @@ class DescriptionPokemonPage extends HookWidget {
             return Container();
           }
         },
+      ),
+    );
+  }
+}
+
+class StarFavoritePokemon extends StatelessWidget {
+  const StarFavoritePokemon({
+    Key? key,
+    required this.favoritePokemons,
+    required this.pokemon,
+  }) : super(key: key);
+
+  final List<int> favoritePokemons;
+  final PokemonComplete pokemon;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (favoritePokemons.contains(pokemon.id)) {
+          context
+              .read<PokemonBloc>()
+              .add(RemoveFavoritePokemon(id: pokemon.id));
+        } else {
+          context.read<PokemonBloc>().add(AddFavoritePokemon(id: pokemon.id));
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Icon(
+          favoritePokemons.contains(pokemon.id)
+              ? const IconData(0xecf3, fontFamily: 'MaterialIcons')
+              : const IconData(0xecf2, fontFamily: 'MaterialIcons'),
+          color: Colors.white,
+          size: 40.0,
+        ),
       ),
     );
   }
@@ -269,65 +314,3 @@ class RowDescription extends StatelessWidget {
     );
   }
 }
-
-
-
-//   Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: Row(
-//       children: [
-//         SizedBox(
-//           width: width * 0.3,
-//           child: const Text('Pre Evolution', style: TextStyle(color: Colors.blueGrey, fontSize: 17),),
-//         ),
-//         Container(
-//             child: widget.pokemonDescription['prev_evolution'] != null ?
-//             SizedBox(
-//               height: 20,
-//               width: width * 0.55,
-//               child: ListView.builder(
-//                 scrollDirection: Axis.horizontal,
-//                 itemCount: widget.pokemonDescription['prev_evolution'].length,
-//                 itemBuilder: (context, index){
-//                   return Padding(
-//                     padding: const EdgeInsets.only(left:8.0),
-//                     child: Text(widget.pokemonDescription['prev_evolution'][index]['name'], style: const TextStyle(color: Colors.black, fontSize: 17),),
-//                   );
-//                 },
-//               ),
-//             ): const Text("Just Hatched", style: TextStyle(color: Colors.black, fontSize: 17),)
-//         ),
-
-//       ],
-//     ),
-//   ),
-
-//   Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: Row(
-//       children: [
-//         SizedBox(
-//           width: width * 0.3,
-//           child: const Text('Next Evolution', style: TextStyle(color: Colors.blueGrey, fontSize: 17),),
-//         ),
-//         Container(
-//           child: widget.pokemonDescription['next_evolution'] != null ?
-//               SizedBox(
-//                 height: 20,
-//                 width: width * 0.55,
-//                 child: ListView.builder(
-//                   scrollDirection: Axis.horizontal,
-//                   itemCount: widget.pokemonDescription['next_evolution'].length,
-//                   itemBuilder: (context, index){
-//                     return Padding(
-//                       padding: const EdgeInsets.only(right:8.0),
-//                       child: Text(widget.pokemonDescription['next_evolution'][index]['name'], style: const TextStyle(color: Colors.black, fontSize: 17),),
-//                     );
-//                   },
-//                 ),
-//               ): const Text("Maxed Out", style: TextStyle(color: Colors.black, fontSize: 17),)
-//         ),
-
-//       ],
-//     ),
-//   ),

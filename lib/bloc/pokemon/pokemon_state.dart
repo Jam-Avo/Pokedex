@@ -8,6 +8,7 @@ class PokemonState extends Equatable {
   final List<PokemonSimple>? pokemonSimpleList;
   final bool? canLoadNextPage;
   final PokemonComplete? pokemonComplete;
+  final List<int>? favoritePokemons;
   final RequestStatus pokemonSimpleListStatus;
   final RequestStatus pokemonCompleteStatus;
   final DioError? errorPokemonSimpleList;
@@ -17,6 +18,7 @@ class PokemonState extends Equatable {
     this.pokemonSimpleList,
     this.canLoadNextPage,
     this.pokemonComplete,
+    this.favoritePokemons = const [],
     this.pokemonSimpleListStatus = RequestStatus.initial,
     this.pokemonCompleteStatus = RequestStatus.initial,
     this.errorPokemonSimpleList,
@@ -27,6 +29,7 @@ class PokemonState extends Equatable {
     bool pokemonSimpleList = false,
     bool canLoadNextPage = false,
     bool pokemonComplete = false,
+    bool favoritePokemons = false,
     bool pokemonSimpleListStatus = false,
     bool pokemonCompleteStatus = false,
     bool errorPokemonSimpleList = false,
@@ -36,6 +39,7 @@ class PokemonState extends Equatable {
       pokemonSimpleList: pokemonSimpleList ? null : this.pokemonSimpleList,
       canLoadNextPage: canLoadNextPage ? null : this.canLoadNextPage,
       pokemonComplete: pokemonComplete ? null : this.pokemonComplete,
+      favoritePokemons: favoritePokemons ? null : this.favoritePokemons,
       pokemonSimpleListStatus: pokemonSimpleListStatus
           ? RequestStatus.initial
           : this.pokemonSimpleListStatus,
@@ -53,6 +57,7 @@ class PokemonState extends Equatable {
     List<PokemonSimple>? pokemonSimpleList,
     bool? canLoadNextPage,
     PokemonComplete? pokemonComplete,
+    List<int>? favoritePokemons,
     RequestStatus? pokemonSimpleListStatus,
     RequestStatus? pokemonCompleteStatus,
     DioError? errorPokemonSimpleList,
@@ -62,6 +67,7 @@ class PokemonState extends Equatable {
       pokemonSimpleList: pokemonSimpleList ?? this.pokemonSimpleList,
       canLoadNextPage: canLoadNextPage ?? this.canLoadNextPage,
       pokemonComplete: pokemonComplete ?? this.pokemonComplete,
+      favoritePokemons: favoritePokemons ?? this.favoritePokemons,
       pokemonSimpleListStatus:
           pokemonSimpleListStatus ?? this.pokemonSimpleListStatus,
       pokemonCompleteStatus:
@@ -77,6 +83,7 @@ class PokemonState extends Equatable {
         pokemonSimpleList,
         canLoadNextPage,
         pokemonComplete,
+        favoritePokemons,
         pokemonSimpleListStatus,
         pokemonCompleteStatus,
         errorPokemonSimpleList,

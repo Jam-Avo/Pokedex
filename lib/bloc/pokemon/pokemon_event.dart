@@ -11,3 +11,15 @@ class PokemonCompleteResquest extends PokemonEvent {
 
   PokemonCompleteResquest({required this.id});
 }
+
+class AddFavoritePokemon extends PokemonEvent {
+  final int id;
+
+  AddFavoritePokemon({required this.id});
+}
+
+class RemoveFavoritePokemon extends PokemonEvent {
+  final int id;
+
+  RemoveFavoritePokemon({required this.id});
+}

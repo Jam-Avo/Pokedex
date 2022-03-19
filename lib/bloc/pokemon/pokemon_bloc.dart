@@ -45,5 +45,16 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
         ));
       });
     });
+
+    on<AddFavoritePokemon>((event, emit) async {
+      emit(state
+          .copyWith(favoritePokemons: [...?state.favoritePokemons, event.id]));
+    });
+
+    on<RemoveFavoritePokemon>((event, emit) async {
+      var array = [...?state.favoritePokemons];
+      array.remove(event.id);
+      emit(state.copyWith(favoritePokemons: array));
+    });
   }
 }

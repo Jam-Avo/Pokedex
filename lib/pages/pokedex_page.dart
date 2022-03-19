@@ -39,6 +39,27 @@ class PokedexPage extends HookWidget {
               final ValueNotifier<List<PokemonSimple>> pokemonList =
                   useState(state.pokemonSimpleList!);
               final ValueNotifier<bool> filterByFavorite = useState(false);
+
+              filterPokemons() {
+                pokemonList.value = state.pokemonSimpleList!.where((pokemon) {
+                  if (searchController.value.text == "") {
+                    if (filterByFavorite.value) {
+                      return state.favoritePokemons!.contains(pokemon.id);
+                    } else {
+                      return true;
+                    }
+                  } else {
+                    if (filterByFavorite.value) {
+                      return state.favoritePokemons!.contains(pokemon.id) &&
+                          pokemon.name.startsWith(searchController.value.text);
+                    } else {
+                      return pokemon.name
+                          .startsWith(searchController.value.text);
+                    }
+                  }
+                }).toList();
+              }
+
               return Column(
                 children: [
                   Padding(
@@ -50,14 +71,7 @@ class PokedexPage extends HookWidget {
                           child: TextFormField(
                             controller: searchController,
                             onChanged: (_) {
-                              if (searchController.value.text != "") {
-                                pokemonList.value = state.pokemonSimpleList!
-                                    .where((pokemon) => pokemon.name.startsWith(
-                                        searchController.value.text))
-                                    .toList();
-                              } else {
-                                pokemonList.value = state.pokemonSimpleList!;
-                              }
+                              filterPokemons();
                             },
                             decoration: const InputDecoration(
                               icon: Icon(
@@ -82,6 +96,8 @@ class PokedexPage extends HookWidget {
                           tooltip: 'Filtar',
                           onPressed: () {
                             filterByFavorite.value = !filterByFavorite.value;
+
+                            filterPokemons();
                           },
                         ),
                       ],
@@ -90,7 +106,7 @@ class PokedexPage extends HookWidget {
                   Expanded(
                     child: GridPokemons(
                       pokemonList: pokemonList.value,
-                      context: context,
+                      favoritePokemons: state.favoritePokemons!,
                     ),
                   ),
                 ],
@@ -113,35 +129,67 @@ class PokedexPage extends HookWidget {
 class GridPokemons extends StatelessWidget {
   const GridPokemons({
     Key? key,
-    required this.context,
     required this.pokemonList,
+    required this.favoritePokemons,
   }) : super(key: key);
 
   final List<PokemonSimple> pokemonList;
-  final BuildContext context;
+  final List<int> favoritePokemons;
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
         gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemCount: pokemonList.length,
         itemBuilder: (context, index) {
           return Card(
-            child: GridTile(
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      NamesRoutes.description +
-                          "/" +
-                          pokemonList[index].id.toString(),
-                    );
-                  },
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  NamesRoutes.description +
+                      "/" +
+                      pokemonList[index].id.toString(),
+                );
+              },
+              child: GridTile(
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
                   child: Column(
                     children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (favoritePokemons
+                                  .contains(pokemonList[index].id)) {
+                                context.read<PokemonBloc>().add(
+                                    RemoveFavoritePokemon(
+                                        id: pokemonList[index].id));
+                              } else {
+                                context.read<PokemonBloc>().add(
+                                    AddFavoritePokemon(
+                                        id: pokemonList[index].id));
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                favoritePokemons.contains(pokemonList[index].id)
+                                    ? const IconData(0xecf3,
+                                        fontFamily: 'MaterialIcons')
+                                    : const IconData(0xecf2,
+                                        fontFamily: 'MaterialIcons'),
+                                color: Colors.black,
+                                size: 24.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       Image.network(pokemonList[index].imageUrl),
                       Text(pokemonList[index].name)
                     ],

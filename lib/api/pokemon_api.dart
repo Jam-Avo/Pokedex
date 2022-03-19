@@ -5,11 +5,10 @@ import 'package:pokedex/models/pokemon/pokemon_simple_list_model.dart';
 class PokemonApi {
   final baseUrl = 'https://pokeapi.co';
 
-  //TODO: Falta manejar los errores
   Future<PokemonSimpleList> getPokemonSimpleList(
       {required int pageIndex}) async {
     return Dio().get("$baseUrl/api/v2/pokemon", queryParameters: {
-      'limit': '10000',
+      'limit': '300',
       'offset': (pageIndex * 200).toString()
     }).then((response) {
       return PokemonSimpleList.fromJson(response.data!);
