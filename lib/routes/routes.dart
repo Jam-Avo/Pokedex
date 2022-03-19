@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex/pages/description_pokemon_page.dart';
-import 'package:pokedex/pages/filter_page.dart';
 import 'package:pokedex/pages/no_found_page.dart';
 import 'package:pokedex/pages/pokedex_page.dart';
 import 'package:pokedex/routes/names_routes.dart';
@@ -10,13 +9,8 @@ MaterialPageRoute onGenerateRoute(settings) {
 
   page = const NoFoundPage();
 
-  switch (settings.name) {
-    case NamesRoutes.home:
-      page = const PokedexPage();
-      break;
-    case NamesRoutes.filter:
-      page = const FilterPage();
-      break;
+  if (settings.name == NamesRoutes.home) {
+    page = const PokedexPage();
   }
 
   if (settings.name!.startsWith(NamesRoutes.description)) {

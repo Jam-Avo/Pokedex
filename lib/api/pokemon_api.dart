@@ -9,7 +9,7 @@ class PokemonApi {
   Future<PokemonSimpleList> getPokemonSimpleList(
       {required int pageIndex}) async {
     return Dio().get("$baseUrl/api/v2/pokemon", queryParameters: {
-      'limit': '12',
+      'limit': '10000',
       'offset': (pageIndex * 200).toString()
     }).then((response) {
       return PokemonSimpleList.fromJson(response.data!);

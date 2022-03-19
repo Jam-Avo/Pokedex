@@ -6,7 +6,6 @@ import 'package:pokedex/bloc/pokemon/pokemon_bloc.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_event.dart';
 import 'package:pokedex/bloc/pokemon/pokemon_state.dart';
 import 'package:pokedex/utils/constants.dart';
-import 'package:pokedex/components/row_description.dart';
 
 class DescriptionPokemonPage extends HookWidget {
   const DescriptionPokemonPage({Key? key, required this.pokemonId})
@@ -40,7 +39,7 @@ class DescriptionPokemonPage extends HookWidget {
               children: [
                 const Positioned(
                   top: 20,
-                  left: 5,
+                  left: 10,
                   child: BackButton(),
                 ),
                 Positioned(
@@ -236,6 +235,38 @@ class BackButton extends StatelessWidget {
         onPressed: () {
           Navigator.pop(context);
         });
+  }
+}
+
+class RowDescription extends StatelessWidget {
+  const RowDescription(
+      {Key? key, required this.textLeft, required this.textRigth})
+      : super(key: key);
+
+  final String textLeft;
+  final String textRigth;
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: width * 0.3,
+            child: Text(
+              textLeft,
+              style: const TextStyle(color: Colors.blueGrey, fontSize: 17),
+            ),
+          ),
+          Text(
+            textRigth,
+            style: const TextStyle(color: Colors.black, fontSize: 17),
+          ),
+        ],
+      ),
+    );
   }
 }
 
